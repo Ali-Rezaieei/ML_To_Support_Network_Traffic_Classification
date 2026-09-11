@@ -154,6 +154,17 @@ explainable AI for traffic classifiers. They're self-contained — each
 notebook fetches its own data and dependencies on first run. See their
 inline documentation for details.
 
+## System pipeline
+
+![System pipeline](04-qos-testbed/testbed/pipeline_diagram.png)
+
+A flow's first 10 packets become a 20-dimensional feature vector, the
+deployed Random Forest assigns one of the 4 QoS classes, and that label
+drives `tc`/`iptables` enforcement on the router's egress interface. The
+offline training script and the live sniffer import the identical
+feature-extraction code (`common/splt_features.py`), so the two paths
+cannot silently diverge.
+
 ## Testbed topology
 
 ![Testbed topology](04-qos-testbed/testbed/topology_diagram.png)
