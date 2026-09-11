@@ -154,18 +154,12 @@ explainable AI for traffic classifiers. They're self-contained — each
 notebook fetches its own data and dependencies on first run. See their
 inline documentation for details.
 
-## Citation
+## Testbed topology
 
-If you use the underlying tutorial dataset or notebooks, please cite:
+![Testbed topology](04-qos-testbed/testbed/topology_diagram.png)
 
-```bibtex
-@unpublished{pekar2025tutorial,
-  author = {Adrián Pekár, Richard Plný, and Karel Hynek},
-  title  = {Tutorial on Network Traffic Flow Classification Using Machine Learning},
-  note   = {Submitted for publication},
-  year   = {2025}
-}
-```
-
-See `04-qos-testbed/paper/references.bib` for the full bibliography of the
-QoS system paper itself.
+Four Docker client containers, one per QoS class, feed an OVS switch that
+connects to a router container enforcing the classifier's decisions with
+`tc`/`iptables` before a shared, bandwidth-constrained link to a server
+container. See the paper for the full description and the pilot topology
+actually used to collect the results above.
