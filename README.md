@@ -63,7 +63,7 @@ cannot silently diverge.
 03-explainability/       <- tutorial: XAI (SHAP, LIME) for traffic classifiers
 ```
 
-## The 4 phases
+## The 3 phases
 
 **Phase 1 — Data & Model** (`04-qos-testbed/phase1_train.py`): maps 337 raw
 nDPI application labels onto the 4 QoS classes (`common/qos_mapping.py`),
@@ -99,11 +99,6 @@ Four Docker client containers, one per QoS class, feed an OVS switch that
 connects to a router container enforcing the classifier's decisions with
 `tc`/`iptables` before a shared, bandwidth-constrained link to a server
 container.
-
-**Phase 4 — Paper**: the complete paper (`04-qos-testbed/paper/main.tex`,
-compiling to `main.pdf`) documenting the full methodology and results,
-plus an ACM-format edition of the same content (`Lab/*.tex` +
-`main_lab.tex`, compiling to `main_lab.pdf`).
 
 ## Notable findings
 
