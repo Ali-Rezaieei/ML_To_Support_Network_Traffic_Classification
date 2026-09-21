@@ -19,6 +19,15 @@ The 4 QoS classes: **Delay-Sensitive** (VoIP, gaming, DNS/control-plane),
 transfers, game/software updates), **Web-Browsing** (everything else,
 best-effort).
 
+![System pipeline](04-qos-testbed/testbed/pipeline_diagram.png)
+
+A flow's first 10 packets become a 20-dimensional feature vector, the
+deployed Random Forest assigns one of the 4 QoS classes, and that label
+drives `tc`/`iptables` enforcement on the router's egress interface. The
+offline training script and the live sniffer import the identical
+feature-extraction code (`common/splt_features.py`), so the two paths
+cannot silently diverge.
+
 ### Headline results (real, measured — see the paper for full methodology)
 
 | Metric | Result |
@@ -37,8 +46,8 @@ best-effort).
   phase1_train.py           Phase 1: dataset prep + model training
   router/                   Phase 2: real-time sniffer + tc/iptables enforcement
   testbed/                  Phase 3: Containernet topology, D-ITG traffic profiles, evaluation
-  paper/                    Phase 4: main.tex (standalone paper) + Lab/ (the same content in the
-                               university Lab-report format, main_lab.tex) + references.bib
+  paper/                    Phase 4: the full paper (main.tex + references.bib) and an ACM-format
+                               edition of the same content (Lab/*.tex + main_lab.tex)
   models/                   trained model metadata + metrics (the model .pkl itself is gitignored, see below)
   experiments/              ablation studies: hyperparameters/feature-window (ablation_study.py), real
                                per-window wait time (decision_delay_study.py), QoS class granularity
@@ -84,11 +93,17 @@ Containernet installed with root; `testbed/results/pilot/` contains the raw
 logs from a real (topologically simplified, root-not-required) Docker pilot
 run instead.
 
-**Phase 4 — Paper** (`04-qos-testbed/paper/`): `main.tex` + `references.bib`,
-compiling to the 11-page `main.pdf` (10 pages of content, 1 of
-references). The same content also exists as `Lab/*.tex` +
-`main_lab.tex`, split into per-section files in the ACM format required
-for the university Lab-report submission, compiling to `main_lab.pdf`.
+![Testbed topology](04-qos-testbed/testbed/topology_diagram.png)
+
+Four Docker client containers, one per QoS class, feed an OVS switch that
+connects to a router container enforcing the classifier's decisions with
+`tc`/`iptables` before a shared, bandwidth-constrained link to a server
+container.
+
+**Phase 4 — Paper**: the complete paper (`04-qos-testbed/paper/main.tex`,
+compiling to `main.pdf`) documenting the full methodology and results,
+plus an ACM-format edition of the same content (`Lab/*.tex` +
+`main_lab.tex`, compiling to `main_lab.pdf`).
 
 ## Notable findings
 
@@ -153,24 +168,3 @@ comparative modeling (Random Forest vs. LightGBM vs. others), and
 explainable AI for traffic classifiers. They're self-contained — each
 notebook fetches its own data and dependencies on first run. See their
 inline documentation for details.
-
-## System pipeline
-
-![System pipeline](04-qos-testbed/testbed/pipeline_diagram.png)
-
-A flow's first 10 packets become a 20-dimensional feature vector, the
-deployed Random Forest assigns one of the 4 QoS classes, and that label
-drives `tc`/`iptables` enforcement on the router's egress interface. The
-offline training script and the live sniffer import the identical
-feature-extraction code (`common/splt_features.py`), so the two paths
-cannot silently diverge.
-
-## Testbed topology
-
-![Testbed topology](04-qos-testbed/testbed/topology_diagram.png)
-
-Four Docker client containers, one per QoS class, feed an OVS switch that
-connects to a router container enforcing the classifier's decisions with
-`tc`/`iptables` before a shared, bandwidth-constrained link to a server
-container. See the paper for the full description and the pilot topology
-actually used to collect the results above.
